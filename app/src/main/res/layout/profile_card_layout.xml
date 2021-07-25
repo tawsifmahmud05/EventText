@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="16dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginVertical="18dp">
+        <TextView
+            android:id="@+id/prof_card_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textColor="#454545"
+            android:textSize="20sp"
+            android:fontFamily="@font/montserrat_semibold"
+            >
+
+        </TextView>
+        <LinearLayout
+            android:layout_below="@+id/prof_card_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/prof_card_date"
+            android:layout_below="@+id/prof_card_title"
+            android:layout_marginTop="7dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:textColor="#A7A7A7"
+            android:textSize="14sp"
+            android:fontFamily="@font/montserrat_medium"
+            >
+
+        </TextView>
+            <TextView
+                android:id="@+id/prof_card_time"
+                android:layout_below="@+id/prof_card_title"
+                android:layout_marginTop="7dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:text="Time"
+                android:textColor="#A7A7A7"
+                android:textSize="14sp"
+                android:fontFamily="@font/montserrat_medium"
+                >
+
+            </TextView>
+        </LinearLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

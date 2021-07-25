@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="16dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
+
+    <!--
+        In the above cardview widget
+        cardelevation property will give elevation to your card view
+        card corner radius will provide radius to your card view
+        card background color will give background color to your card view
+        card max elevation will give the cardview maximum elevation
+        card prevent corner overlap will add padding to CardView on v20 and
+        before to prevent intersections between the Card content and rounded corners.
+        card use compact padding will add padding in API v21+ as well to have the same
+        measurements with previous versions.
+    -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/home_card_bg">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginVertical="18dp">
+
+            <TextView
+                android:id="@+id/home_card_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textColor="#454545"
+                android:textSize="20sp"
+                android:fontFamily="@font/montserrat_semibold"
+                >
+
+            </TextView>
+            <View
+                android:layout_below="@+id/home_card_title"
+                android:layout_marginTop="2.5dp"
+                android:layout_width="100dp"
+                android:layout_height="2dp"
+                android:background="#454545"                />
+            <TextView
+                android:id="@+id/home_card_number"
+                android:layout_below="@+id/home_card_title"
+                android:layout_marginTop="7dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Number"
+                android:textColor="#454545"
+                android:textSize="14sp"
+                android:fontFamily="@font/montserrat_medium"
+                >
+
+            </TextView>
+            <TextView
+                android:id="@+id/home_card_message"
+                android:layout_below="@+id/home_card_number"
+                android:layout_marginTop="14dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Message"
+                android:textColor="#454545"
+                android:textSize="16sp"
+                android:fontFamily="@font/montserrat_semibold"
+                >
+
+            </TextView>
+            <TextView
+                android:id="@+id/home_card_date"
+                android:layout_below="@+id/home_card_message"
+                android:layout_marginTop="13dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:textColor="#454545"
+                android:textSize="14sp"
+                android:fontFamily="@font/montserrat_medium"
+                >
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/home_card_time"
+                android:layout_below="@+id/home_card_date"
+                android:layout_marginTop="1dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time"
+                android:textColor="#454545"
+                android:textSize="14sp"
+                android:fontFamily="@font/montserrat_medium"
+                >
+
+            </TextView>
+        </RelativeLayout>
+    </FrameLayout>
+
+
+</androidx.cardview.widget.CardView>

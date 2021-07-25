@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f9f9f9"
+    android:id="@+id/home_frag"
+    tools:context=".Home_Fragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:id="@+id/timing"
+        android:layout_marginHorizontal="15dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/home_today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="29 Dec 2021"
+                android:textSize="16sp"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textColor="#454545">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/home_event_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="5 events Today"
+                android:textColor="#454545">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="1dp"
+            android:layout_gravity=""
+            android:src="@drawable/ic_man">
+
+        </ImageView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_below="@+id/timing"
+        android:id="@+id/threebtn"
+        android:paddingBottom="6dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/today_btn"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+
+            android:textColor="#454545"
+            android:textSize="14sp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:background="@drawable/button"
+            android:text="today">
+
+        </Button>
+
+        <Button
+            android:id="@+id/tomorrow_btn"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#454545"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_height="40dp"
+            android:background="@drawable/button"
+            android:text="Tomorrow">
+
+        </Button>
+
+        <Button
+            android:id="@+id/week_btn"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#454545"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_height="40dp"
+            android:background="@drawable/button"
+            android:text="This Week">
+
+        </Button>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/threebtn"
+        android:id="@+id/TE"
+        android:layout_marginHorizontal="15dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/home_event_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#454545"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_marginBottom="5dp"
+            android:text="Today's Events">
+
+        </TextView>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_below="@+id/TE"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="80dp"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_below="@+id/tde"
+            android:id="@+id/eventlistView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

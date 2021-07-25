@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f9f9f9"
+    android:id="@+id/pro_frag"
+    tools:context=".Profile_Fragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:id="@+id/timing"
+        android:layout_marginHorizontal="15dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/prof_today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="29 Dec 2021"
+                android:textSize="16sp"
+                android:fontFamily="@font/montserrat_semibold"
+
+                android:textColor="#454545">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:text="5 events Today"
+                android:textSize="14sp"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="#454545">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="1dp"
+            android:layout_gravity=""
+            android:src="@drawable/ic_man">
+
+        </ImageView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="43dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timing"
+        android:id="@+id/TE"
+        android:layout_marginBottom="5dp"
+        android:layout_marginHorizontal="15dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#454545"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="All Event">
+
+        </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#A7A7A7"
+            android:textSize="10sp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="Tap to edit any event">
+
+        </TextView>
+
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_below="@+id/TE"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="80dp"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_below="@+id/tde"
+            android:id="@+id/AlleventlistView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

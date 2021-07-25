@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f9f9f9"
+    tools:context=".Add_Fragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:id="@+id/timing"
+        android:layout_marginHorizontal="15dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/add_today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="29 Dec 2021"
+                android:textSize="16sp"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textColor="@color/black">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="5 events Today"
+                android:textColor="@color/black">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="1dp"
+            android:layout_gravity=""
+            android:src="@drawable/ic_man">
+
+        </ImageView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="43dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timing"
+        android:id="@+id/TE"
+        android:layout_marginHorizontal="15dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginBottom="5dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="Add Event">
+
+        </TextView>
+
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_below="@+id/TE"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="25dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/add_title"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginBottom="15dp"
+            android:textSize="14sp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:textColor="@color/black"
+            android:paddingLeft="15dp"
+            android:hint="Title"
+            android:textColorHint="#A7A7A7"
+            android:elevation="2dp"
+            android:background="@drawable/input_bg">
+
+        </EditText>
+
+        <TextView
+            android:id="@+id/add_date"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginBottom="15dp"
+            android:textSize="14sp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:textColor="@color/black"
+            android:paddingLeft="15dp"
+            android:hint="Date"
+            android:gravity="center_vertical"
+            android:textColorHint="#A7A7A7"
+            android:elevation="2dp"
+            android:background="@drawable/input_bg">
+
+        </TextView>
+        <TextView
+            android:id="@+id/add_time"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginBottom="15dp"
+            android:textSize="14sp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:textColor="@color/black"
+            android:paddingLeft="15dp"
+            android:hint="Time"
+            android:gravity="center_vertical"
+            android:textColorHint="#A7A7A7"
+            android:elevation="2dp"
+            android:background="@drawable/input_bg">
+
+        </TextView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <EditText
+            android:id="@+id/add_number"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginBottom="15dp"
+            android:textSize="14sp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:textColor="@color/black"
+            android:paddingLeft="15dp"
+            android:hint="Mobile Number"
+            android:textColorHint="#A7A7A7"
+            android:elevation="2dp"
+
+            android:background="@drawable/input_bg">
+
+
+        </EditText>
+            <ImageView
+                android:id="@+id/add_contact"
+                android:elevation="10dp"
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_call"
+                app:tint="#4592F6">
+
+            </ImageView>
+        </LinearLayout>
+
+
+
+
+        <EditText
+            android:id="@+id/add_message"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginBottom="15dp"
+            android:textSize="14sp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_width="match_parent"
+            android:layout_height="172dp"
+            android:textColor="@color/black"
+            android:paddingLeft="15dp"
+            android:hint="Message"
+            android:textColorHint="#A7A7A7"
+            android:elevation="2dp"
+            android:background="@drawable/input_bg">
+
+        </EditText>
+
+        <Button
+            android:id="@+id/add_save_btn"
+            android:layout_marginHorizontal="5dp"
+            android:textSize="18sp"
+            android:fontFamily="@font/montserrat_bold"
+            android:layout_marginBottom="20dp"
+
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:background="@drawable/sv_edt_btn"
+            android:text="Save">
+
+        </Button>
+    </LinearLayout>
+
+</RelativeLayout>
