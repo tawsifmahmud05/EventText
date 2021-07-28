@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -22,6 +23,8 @@ public class profile_card_adapter extends RecyclerView.Adapter<profile_card_adap
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+        void onDeleteClick(int position);
+        void onEditClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -65,12 +68,15 @@ public class profile_card_adapter extends RecyclerView.Adapter<profile_card_adap
     public class Viewholder extends RecyclerView.ViewHolder {
 
         private TextView category_name, card_title,card_message,card_date,card_time;
+        private ImageView edit,remove;
 
         public Viewholder(@NonNull View itemView,OnItemClickListener listener) {
             super(itemView);
             card_title = itemView.findViewById(R.id.prof_card_title);
             card_date = itemView.findViewById(R.id.prof_card_date);
             card_time = itemView.findViewById(R.id.prof_card_time);
+            edit = itemView.findViewById(R.id.edit);
+            remove = itemView.findViewById(R.id.remove);
 
             itemView.setOnClickListener(new View.OnClickListener(){
 
@@ -80,6 +86,29 @@ public class profile_card_adapter extends RecyclerView.Adapter<profile_card_adap
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION){
                             listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+
+            remove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener !=null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onDeleteClick(position);
+                        }
+                    }
+                }
+            });
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener !=null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onEditClick(position);
                         }
                     }
                 }

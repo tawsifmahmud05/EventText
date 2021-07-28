@@ -187,7 +187,7 @@
         <Button
             android:id="@+id/edit_btn"
             android:layout_marginHorizontal="5dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:fontFamily="@font/montserrat_bold"
             android:layout_width="match_parent"
             android:layout_height="47dp"
@@ -197,20 +197,7 @@
 
 
         </Button>
-        <Button
 
-            android:id="@+id/dlt_btn"
-            android:layout_marginHorizontal="5dp"
-            android:textSize="18sp"
-            android:layout_marginBottom="20dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:layout_width="match_parent"
-            android:layout_height="47dp"
-            android:background="@drawable/dlt_btn"
-            android:text="Delete">
-
-
-        </Button>
     </LinearLayout>
 
 </RelativeLayout>

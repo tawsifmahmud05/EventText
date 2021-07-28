@@ -77,7 +77,6 @@ public class Edit_Fragment extends Fragment {
         contact = (ImageView) view.findViewById(R.id.edit_contact);
 
         edit = (Button) view.findViewById(R.id.edit_btn);
-        delete = (Button) view.findViewById(R.id.dlt_btn);
 
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
@@ -115,12 +114,7 @@ public class Edit_Fragment extends Fragment {
             }
         });
 
-        delete.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                deleteRecord();
-            }
-        });
+
 
 
 
@@ -182,12 +176,7 @@ public class Edit_Fragment extends Fragment {
 
 
 
-    public void deleteRecord(){
-            RealmResults<home_cardModel> results = realm.where(home_cardModel.class).equalTo("event_Id", eventId).findAll();
-            realm.beginTransaction();
-            results.deleteAllFromRealm();
-            realm.commitTransaction();
-        }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

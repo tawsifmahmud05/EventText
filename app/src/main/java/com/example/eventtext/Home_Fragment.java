@@ -1,15 +1,20 @@
 package com.example.eventtext;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +33,10 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+
+import static android.Manifest.permission.READ_PHONE_NUMBERS;
+import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.Manifest.permission.READ_SMS;
 
 
 public class Home_Fragment extends Fragment {
@@ -71,6 +80,10 @@ public class Home_Fragment extends Fragment {
         cardAdapter = new home_card_adapter(getActivity(), cardArrayList);
 
         eventListView = (RecyclerView) view.findViewById(R.id.eventlistView);
+
+
+
+
 
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
@@ -137,9 +150,10 @@ public class Home_Fragment extends Fragment {
 
                 for(home_cardModel p:results){
                     cardArrayList.add(p);
-                    cardAdapter.notifyDataSetChanged();
+
 
                 }
+                cardAdapter.notifyDataSetChanged();
 
 
             }
@@ -154,9 +168,10 @@ public class Home_Fragment extends Fragment {
                 cardArrayList.clear();
                 for(home_cardModel p:results){
                     cardArrayList.add(p);
-                    cardAdapter.notifyDataSetChanged();
+
 
                 }
+                cardAdapter.notifyDataSetChanged();
 
 
             }
@@ -176,39 +191,34 @@ public class Home_Fragment extends Fragment {
 
                 for(home_cardModel p:result1){
                     cardArrayList.add(p);
-                    cardAdapter.notifyDataSetChanged();
 
                 }
                 for(home_cardModel p:result2){
                     cardArrayList.add(p);
-                    cardAdapter.notifyDataSetChanged();
 
                 }
                 for(home_cardModel p:result3){
                     cardArrayList.add(p);
-                    cardAdapter.notifyDataSetChanged();
 
                 }
                 for(home_cardModel p:result4){
                     cardArrayList.add(p);
-                    cardAdapter.notifyDataSetChanged();
 
                 }
                 for(home_cardModel p:result5){
                     cardArrayList.add(p);
-                    cardAdapter.notifyDataSetChanged();
 
                 }
                 for(home_cardModel p:result6){
                     cardArrayList.add(p);
-                    cardAdapter.notifyDataSetChanged();
 
                 }
                 for(home_cardModel p:result7){
                     cardArrayList.add(p);
-                    cardAdapter.notifyDataSetChanged();
 
                 }
+
+                cardAdapter.notifyDataSetChanged();
 
 
             }
@@ -223,4 +233,12 @@ public class Home_Fragment extends Fragment {
     }
 
 
+    private void requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{READ_SMS, READ_PHONE_NUMBERS, READ_PHONE_STATE}, 100);
+        }
+    }
+
 }
+
+

@@ -1,22 +1,35 @@
 package com.example.eventtext;
 
+import android.Manifest;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Parcelable;
 import android.provider.ContactsContract;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,8 +52,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import io.realm.Realm;
@@ -49,11 +65,14 @@ import io.realm.RealmResults;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
+import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static android.icu.lang.UProperty.NAME;
 import static io.realm.Realm.getApplicationContext;
+import static java.lang.Integer.parseInt;
 
 
 public class Add_Fragment extends Fragment {
+
     Realm realm;
 
     private TextView today, date, time;
@@ -72,6 +91,8 @@ public class Add_Fragment extends Fragment {
     private static final int REQUEST_CODE_PICK_CONTACTS = 1;
     private Uri uriContact;
     private String contactID;
+    private int alarmId = 0;
+
 
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -106,12 +127,13 @@ public class Add_Fragment extends Fragment {
 
         save = (Button) view.findViewById(R.id.add_save_btn);
 
+
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
-        today.setText(day+"-"+MONTHS[month]+"-"+year);
+        today.setText(day + "-" + MONTHS[month] + "-" + year);
 
         date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +152,7 @@ public class Add_Fragment extends Fragment {
         mnDataSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
                 date.setText(dayOfMonth + "-" + MONTHS[month] + "-" + year);
             }
         };
@@ -145,6 +168,7 @@ public class Add_Fragment extends Fragment {
                 mTimePicker = new TimePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+
                         time.setText(selectedHour + ":" + selectedMinute);
                     }
                 }, hour, minute, true);//Yes 24 hour time
@@ -166,11 +190,23 @@ public class Add_Fragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 SaveEvent();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy-HH:mm");
+                Calendar Alcal = Calendar.getInstance();
+                try {
+                    Alcal.setTime(sdf.parse(date.getText().toString() + "-" + time.getText().toString()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String unique = date.getText().toString() + time.getText().toString();
+                String sms =    message.getText().toString();
+                String slumber = number.getText().toString();
+                setAlarm(Alcal, alarmId,unique,slumber,sms);
             }
+
+
         });
-
-
 
 
         return view;
@@ -178,25 +214,20 @@ public class Add_Fragment extends Fragment {
 
     public void SaveEvent() {
 
-        if(TextUtils.isEmpty(title.getText()) || TextUtils.isEmpty(date.getText()) ||TextUtils.isEmpty(time.getText()) || TextUtils.isEmpty(number.getText()) || TextUtils.isEmpty(message.getText())) {
+        if (TextUtils.isEmpty(title.getText()) || TextUtils.isEmpty(date.getText()) || TextUtils.isEmpty(time.getText()) || TextUtils.isEmpty(number.getText()) || TextUtils.isEmpty(message.getText())) {
 
-            if(TextUtils.isEmpty(title.getText())){
+            if (TextUtils.isEmpty(title.getText())) {
                 Toast.makeText(getActivity(), "Title missing", Toast.LENGTH_SHORT).show();
-            }
-            else if (TextUtils.isEmpty(date.getText())){
+            } else if (TextUtils.isEmpty(date.getText())) {
                 Toast.makeText(getActivity(), "Choose a Date", Toast.LENGTH_SHORT).show();
-            }
-            else if (TextUtils.isEmpty(time.getText())){
+            } else if (TextUtils.isEmpty(time.getText())) {
                 Toast.makeText(getActivity(), "Pick a time", Toast.LENGTH_SHORT).show();
-            }
-            else if (TextUtils.isEmpty(message.getText())){
+            } else if (TextUtils.isEmpty(message.getText())) {
                 Toast.makeText(getActivity(), "No message given", Toast.LENGTH_SHORT).show();
             }
 
 
-
-        }
-        else{
+        } else {
             realm.beginTransaction();
             home_cardModel p = realm.createObject(home_cardModel.class);
             p.setCard_title(title.getText().toString());
@@ -208,13 +239,10 @@ public class Add_Fragment extends Fragment {
             realm.commitTransaction();
 
 
-
         }
 
 
-
     }
-
 
 
     @Override
@@ -268,4 +296,30 @@ public class Add_Fragment extends Fragment {
 
         number.setText(contactNumber);
     }
+
+    private void setAlarm(Calendar c, int Id,String unique,String smsnumber,String sms) {
+        int requestcode = 0;
+
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), MyReceiver.class);
+        Bundle b = new Bundle();
+        b.putString("unique", unique);
+        b.putString("number", smsnumber);
+        b.putString("sms", sms);
+        intent.putExtras(b);
+//        startActivity(intent);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestcode + Id, intent, PendingIntent.FLAG_ONE_SHOT);
+        alarmId++;
+//        if (c.before(Calendar.getInstance())) {
+//            c.add(Calendar.DATE, 1);
+//        }
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+
+
+    }
+
 }
+
+
+
+

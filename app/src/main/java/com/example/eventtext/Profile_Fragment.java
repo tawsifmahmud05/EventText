@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class Profile_Fragment extends Fragment {
     public static final String[] MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
     private TextView today;
+    private ImageView edit,remove;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +55,8 @@ public class Profile_Fragment extends Fragment {
 
         eventListView = (RecyclerView) view.findViewById(R.id.AlleventlistView);
         today = (TextView) view.findViewById(R.id.prof_today);
+        edit = view.findViewById(R.id.edit);
+        remove = view.findViewById(R.id.remove);
 
 
         Calendar cal = Calendar.getInstance();
@@ -87,7 +91,29 @@ public class Profile_Fragment extends Fragment {
         cardAdapter.setOnItemClickListener(new profile_card_adapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                String c = cardArrayList.get(position).getCard_title();
+//                String c = cardArrayList.get(position).getCard_title();
+//                Edit_Fragment frag = new Edit_Fragment();
+//                FragmentManager fragmentManager = getFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                Bundle arguments = new Bundle();
+//                arguments.putString("key",cardArrayList.get(position).getCard_date()+cardArrayList.get(position).getCard_time());
+//                frag.setArguments(arguments);
+//                fragmentTransaction.replace(R.id.pro_frag, frag);
+//                fragmentTransaction.commit();
+
+            }
+
+            @Override
+            public void onDeleteClick(int position) {
+
+                deleteRecord(cardArrayList.get(position).getCard_date()+cardArrayList.get(position).getCard_time());
+                cardArrayList.remove(position);
+                cardAdapter.notifyItemRemoved(position);
+
+            }
+
+            @Override
+            public void onEditClick(int position) {
                 Edit_Fragment frag = new Edit_Fragment();
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -96,15 +122,19 @@ public class Profile_Fragment extends Fragment {
                 frag.setArguments(arguments);
                 fragmentTransaction.replace(R.id.pro_frag, frag);
                 fragmentTransaction.commit();
-
             }
         });
 
 
 
-
-
-
         return view;
+    }
+    public void deleteRecord(String eventId){
+        RealmResults<home_cardModel> results = realm.where(home_cardModel.class).equalTo("event_Id", eventId).findAll();
+        realm.beginTransaction();
+        results.deleteAllFromRealm();
+        realm.commitTransaction();
+
+
     }
 }
