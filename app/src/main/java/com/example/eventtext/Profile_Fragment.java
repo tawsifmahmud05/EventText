@@ -1,5 +1,9 @@
 package com.example.eventtext;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -67,6 +71,8 @@ public class Profile_Fragment extends Fragment {
         today.setText(day+"-"+MONTHS[month]+"-"+year);
 
 
+
+
         // here we have created new array list and added data to it.
 
         cardArrayList = new ArrayList<>();
@@ -130,11 +136,24 @@ public class Profile_Fragment extends Fragment {
         return view;
     }
     public void deleteRecord(String eventId){
+
         RealmResults<home_cardModel> results = realm.where(home_cardModel.class).equalTo("event_Id", eventId).findAll();
+        home_cardModel p = results.first();
+        cancelAlarm(p.getAlarm_id());
         realm.beginTransaction();
         results.deleteAllFromRealm();
         realm.commitTransaction();
+        Toast.makeText(getActivity(), "Event Removed", Toast.LENGTH_SHORT).show();
 
+
+    }
+
+    private void cancelAlarm(int eventalarmid) {
+        int requestId=0;
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), MyReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), requestId+ eventalarmid, intent, PendingIntent.FLAG_ONE_SHOT);
+        alarmManager.cancel(pendingIntent);
 
     }
 }

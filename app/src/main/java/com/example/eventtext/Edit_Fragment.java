@@ -1,7 +1,14 @@
 package com.example.eventtext;
 
+import android.app.AlarmManager;
+import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,11 +21,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import io.realm.Realm;
@@ -26,6 +37,7 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 import static android.app.Activity.RESULT_OK;
+import static io.realm.Realm.getApplicationContext;
 
 
 public class Edit_Fragment extends Fragment {
@@ -46,11 +58,17 @@ public class Edit_Fragment extends Fragment {
 
     private Button edit,delete;
 
+    private DatePickerDialog.OnDateSetListener mnDataSetListener;
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_CODE_PICK_CONTACTS = 1;
     private Uri uriContact;
     private String contactID;
+
+    private int eventalarmid,dayid,timeid;
+
+    Calendar cal = Calendar.getInstance();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,7 +96,7 @@ public class Edit_Fragment extends Fragment {
 
         edit = (Button) view.findViewById(R.id.edit_btn);
 
-        Calendar cal = Calendar.getInstance();
+
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -95,6 +113,72 @@ public class Edit_Fragment extends Fragment {
 
         loaded();
 
+        date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar datecal = Calendar.getInstance();
+                int year = datecal.get(Calendar.YEAR);
+                int month = datecal.get(Calendar.MONTH);
+                int day = datecal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_MinWidth, mnDataSetListener, year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getDatePicker().setMinDate(System.currentTimeMillis()-10000);
+                dialog.show();
+            }
+        });
+
+        mnDataSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                date.setText(dayOfMonth + "-" + MONTHS[month] + "-" + year);
+                dayid = dayOfMonth+month+year;
+            }
+        };
+
+        time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        if(TextUtils.isEmpty(date.getText().toString())){
+                            Toast.makeText(getActivity(), "Set your day first", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
+                            Calendar datetime = Calendar.getInstance();
+                            try {
+                                datetime.setTime(sdf.parse(date.getText().toString()));
+                                datetime.set(Calendar.HOUR_OF_DAY, selectedHour);
+                                datetime.set(Calendar.MINUTE, selectedMinute);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            if(datetime.getTimeInMillis() > System.currentTimeMillis()+10000) {
+                                time.setText(selectedHour + ":" + selectedMinute);
+                                timeid = selectedHour + selectedMinute;
+                            }
+                            else{
+                                Toast.makeText(getActivity(), "Invalid Time", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }, hour, minute, true);//Yes 24 hour time
+                mTimePicker.setTitle("Pick Time");
+                mTimePicker.show();
+            }
+
+
+        });
+
 
 
         contact.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +194,23 @@ public class Edit_Fragment extends Fragment {
         edit.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                updateRecord();
+                RealmResults<home_cardModel> search = realm.where(home_cardModel.class).equalTo("event_Id", date.getText().toString() + time.getText().toString()).findAll();
+                if (search.isEmpty()) {
+                    if (TextUtils.isEmpty(title.getText()) || TextUtils.isEmpty(date.getText()) || TextUtils.isEmpty(time.getText()) || TextUtils.isEmpty(number.getText()) || TextUtils.isEmpty(message.getText())) {
+                        Toast.makeText(getApplicationContext(), "Content Missing", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        eventalarmid = dayid + timeid;
+                        updateRecord();
+                    }
+
+
+
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Activity time is occupied", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -133,28 +233,29 @@ public class Edit_Fragment extends Fragment {
     }
 
     public void updateRecord(){
-        if(TextUtils.isEmpty(title.getText()) || TextUtils.isEmpty(date.getText()) ||TextUtils.isEmpty(time.getText()) || TextUtils.isEmpty(number.getText()) || TextUtils.isEmpty(message.getText())) {
 
-            if(TextUtils.isEmpty(title.getText())){
-                Toast.makeText(getActivity(), "Title missing", Toast.LENGTH_SHORT).show();
-            }
-            else if (TextUtils.isEmpty(date.getText())){
-                Toast.makeText(getActivity(), "Choose a Date", Toast.LENGTH_SHORT).show();
-            }
-            else if (TextUtils.isEmpty(time.getText())){
-                Toast.makeText(getActivity(), "Pick a time", Toast.LENGTH_SHORT).show();
-            }
-            else if (TextUtils.isEmpty(message.getText())){
-                Toast.makeText(getActivity(), "No message given", Toast.LENGTH_SHORT).show();
-            }
-
-
-
-        }
-        else {
             RealmResults<home_cardModel> results = realm.where(home_cardModel.class).equalTo("event_Id", eventId).findAll();
             if (results.isEmpty()) {
             } else {
+
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy-HH:mm");
+                Calendar Alcal = Calendar.getInstance();
+                try {
+                    Alcal.setTime(sdf.parse(date.getText().toString() + "-" + time.getText().toString()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String unique = date.getText().toString() + time.getText().toString();
+                String sms =    message.getText().toString();
+                String slumber = number.getText().toString();
+
+                home_cardModel p_id = realm.where(home_cardModel.class).equalTo("event_Id", eventId).findFirst();
+                int id = p_id.getAlarm_id();
+
+                updateAlarm(Alcal,id,unique,slumber,sms);
+
+
                 realm.beginTransaction();
 
                 for (home_cardModel p : results) {
@@ -164,15 +265,18 @@ public class Edit_Fragment extends Fragment {
                     p.setCard_number(number.getText().toString());
                     p.setCard_message(message.getText().toString());
                     p.setEvent_Id(date.getText().toString() + time.getText().toString());
+                    p.setAlarm_id(p.getAlarm_id());
                 }
                 realm.commitTransaction();
-                Toast.makeText(getActivity(), "Successfully Updated", Toast.LENGTH_SHORT).show();
+
+
+                Toast.makeText(getActivity(), "Successfully Updated Event", Toast.LENGTH_SHORT).show();
 
 
             }
-        }
-
     }
+
+
 
 
 
@@ -228,5 +332,36 @@ public class Edit_Fragment extends Fragment {
         cursorPhone.close();
 
         number.setText(contactNumber);
+    }
+
+    private void updateAlarm(Calendar c, int Id,String unique,String smsnumber,String sms) {
+        int requestcode = 0;
+
+        cancelAlarm(Id);
+
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), MyReceiver.class);
+        Bundle b = new Bundle();
+        b.putString("unique", unique);
+        b.putString("number", smsnumber);
+        b.putString("sms", sms);
+        intent.putExtras(b);
+//        startActivity(intent);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestcode + eventalarmid , intent, PendingIntent.FLAG_ONE_SHOT);
+//        alarmId++;
+//        if (c.before(Calendar.getInstance())) {
+//            c.add(Calendar.DATE, 1);
+//        }
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+
+
+    }
+    private void cancelAlarm(int alarmId) {
+        int requestId=0;
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), MyReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), requestId+alarmId, intent, PendingIntent.FLAG_ONE_SHOT);
+        alarmManager.cancel(pendingIntent);
+
     }
 }

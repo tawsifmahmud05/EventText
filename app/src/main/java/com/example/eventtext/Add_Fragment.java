@@ -2,6 +2,7 @@ package com.example.eventtext;
 
 import android.Manifest;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
@@ -10,6 +11,7 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -23,6 +25,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Parcelable;
@@ -91,7 +94,12 @@ public class Add_Fragment extends Fragment {
     private static final int REQUEST_CODE_PICK_CONTACTS = 1;
     private Uri uriContact;
     private String contactID;
-    private int alarmId = 0;
+    private int eventalarmid,dayid,timeid;
+
+
+
+
+
 
 
     @Override
@@ -105,7 +113,22 @@ public class Add_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
+
         View view = inflater.inflate(R.layout.fragment_add_, container, false);
+
+//        if( getApplicationContext().checkSelfPermission( Manifest.permission.READ_CONTACTS ) != PackageManager.PERMISSION_GRANTED ) {
+//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 1);
+//        }
+//        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.SEND_SMS)) {
+//            } else {
+//                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+//            }
+//        }
+
+
+
 
 
         Realm.init(getActivity());
@@ -145,6 +168,7 @@ public class Add_Fragment extends Fragment {
 
                 DatePickerDialog dialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_MinWidth, mnDataSetListener, year, month, day);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getDatePicker().setMinDate(System.currentTimeMillis()-10000);
                 dialog.show();
             }
         });
@@ -154,6 +178,8 @@ public class Add_Fragment extends Fragment {
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
                 date.setText(dayOfMonth + "-" + MONTHS[month] + "-" + year);
+                dayid = dayOfMonth+month+year;
+                time.setText("");
             }
         };
 
@@ -165,11 +191,34 @@ public class Add_Fragment extends Fragment {
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
                 TimePickerDialog mTimePicker;
+
                 mTimePicker = new TimePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        if(TextUtils.isEmpty(date.getText().toString())){
+                            Toast.makeText(getActivity(), "Set your day first", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
+                            Calendar datetime = Calendar.getInstance();
+                            try {
+                                datetime.setTime(sdf.parse(date.getText().toString()));
+                                datetime.set(Calendar.HOUR_OF_DAY, selectedHour);
+                                datetime.set(Calendar.MINUTE, selectedMinute);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
 
-                        time.setText(selectedHour + ":" + selectedMinute);
+                            if(datetime.getTimeInMillis() > System.currentTimeMillis()+10000) {
+                                time.setText(selectedHour + ":" + selectedMinute);
+                                timeid = selectedHour + selectedMinute;
+                            }
+                            else{
+                                Toast.makeText(getActivity(), "Invalid Time", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+
                     }
                 }, hour, minute, true);//Yes 24 hour time
                 mTimePicker.setTitle("Pick Time");
@@ -190,19 +239,23 @@ public class Add_Fragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                RealmResults<home_cardModel> search = realm.where(home_cardModel.class).equalTo("event_Id", date.getText().toString() + time.getText().toString()).findAll();
+                if (search.isEmpty()) {
+                    if (TextUtils.isEmpty(title.getText()) || TextUtils.isEmpty(date.getText()) || TextUtils.isEmpty(time.getText()) || TextUtils.isEmpty(number.getText()) || TextUtils.isEmpty(message.getText())) {
+                        Toast.makeText(getApplicationContext(), "Content Missing", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                            eventalarmid = dayid + timeid;
+                            SaveEvent();
+                        }
 
-                SaveEvent();
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy-HH:mm");
-                Calendar Alcal = Calendar.getInstance();
-                try {
-                    Alcal.setTime(sdf.parse(date.getText().toString() + "-" + time.getText().toString()));
-                } catch (ParseException e) {
-                    e.printStackTrace();
+
+
                 }
-                String unique = date.getText().toString() + time.getText().toString();
-                String sms =    message.getText().toString();
-                String slumber = number.getText().toString();
-                setAlarm(Alcal, alarmId,unique,slumber,sms);
+                else {
+                    Toast.makeText(getApplicationContext(), "Event time is occupied", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
 
@@ -214,20 +267,7 @@ public class Add_Fragment extends Fragment {
 
     public void SaveEvent() {
 
-        if (TextUtils.isEmpty(title.getText()) || TextUtils.isEmpty(date.getText()) || TextUtils.isEmpty(time.getText()) || TextUtils.isEmpty(number.getText()) || TextUtils.isEmpty(message.getText())) {
 
-            if (TextUtils.isEmpty(title.getText())) {
-                Toast.makeText(getActivity(), "Title missing", Toast.LENGTH_SHORT).show();
-            } else if (TextUtils.isEmpty(date.getText())) {
-                Toast.makeText(getActivity(), "Choose a Date", Toast.LENGTH_SHORT).show();
-            } else if (TextUtils.isEmpty(time.getText())) {
-                Toast.makeText(getActivity(), "Pick a time", Toast.LENGTH_SHORT).show();
-            } else if (TextUtils.isEmpty(message.getText())) {
-                Toast.makeText(getActivity(), "No message given", Toast.LENGTH_SHORT).show();
-            }
-
-
-        } else {
             realm.beginTransaction();
             home_cardModel p = realm.createObject(home_cardModel.class);
             p.setCard_title(title.getText().toString());
@@ -236,10 +276,27 @@ public class Add_Fragment extends Fragment {
             p.setCard_number(number.getText().toString());
             p.setCard_message(message.getText().toString());
             p.setEvent_Id(date.getText().toString() + time.getText().toString());
+            p.setAlarm_id(eventalarmid);
             realm.commitTransaction();
 
 
-        }
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy-HH:mm");
+            Calendar Alcal = Calendar.getInstance();
+            try {
+                Alcal.setTime(sdf.parse(date.getText().toString() + "-" + time.getText().toString()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            String unique = date.getText().toString() + time.getText().toString();
+            String sms = message.getText().toString();
+            String slumber = number.getText().toString();
+
+            setAlarm(Alcal, eventalarmid, unique, slumber, sms);
+            Toast.makeText(getActivity(), "Event added", Toast.LENGTH_SHORT).show();
+
+
+
 
 
     }
@@ -299,7 +356,6 @@ public class Add_Fragment extends Fragment {
 
     private void setAlarm(Calendar c, int Id,String unique,String smsnumber,String sms) {
         int requestcode = 0;
-
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getActivity(), MyReceiver.class);
         Bundle b = new Bundle();
@@ -309,7 +365,7 @@ public class Add_Fragment extends Fragment {
         intent.putExtras(b);
 //        startActivity(intent);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestcode + Id, intent, PendingIntent.FLAG_ONE_SHOT);
-        alarmId++;
+
 //        if (c.before(Calendar.getInstance())) {
 //            c.add(Calendar.DATE, 1);
 //        }
@@ -317,6 +373,8 @@ public class Add_Fragment extends Fragment {
 
 
     }
+
+
 
 }
 

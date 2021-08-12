@@ -38,7 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:text="5 events Today"
+                android:paddingHorizontal="50dp"
+                android:text=""
                 android:textSize="14sp"
                 android:fontFamily="@font/montserrat_medium"
                 android:textColor="#454545">
@@ -80,7 +81,7 @@
             android:textColor="#A7A7A7"
             android:textSize="10sp"
             android:fontFamily="@font/montserrat_semibold"
-            android:text="Tap to edit any event">
+            android:text="Tap on icon to edit any Event">
 
         </TextView>
 

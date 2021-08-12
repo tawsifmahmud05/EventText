@@ -14,19 +14,29 @@ public class home_cardModel extends RealmObject {
     private String card_date;
     private String card_time;
     private String event_Id;
+    private int alarm_id;
 
 
     public home_cardModel(){
 
     }
 
-    public home_cardModel(String card_title, String card_number, String card_message, String card_date, String card_time, String event_Id) {
+    public home_cardModel(String card_title, String card_number, String card_message, String card_date, String card_time, String event_Id,int alarm_id) {
         this.card_title = card_title;
         this.card_number = card_number;
         this.card_message = card_message;
         this.card_date = card_date;
         this.card_time = card_time;
         this.event_Id = event_Id;
+        this.alarm_id = alarm_id;
+    }
+
+    public int getAlarm_id() {
+        return alarm_id;
+    }
+
+    public void setAlarm_id(int alarm_id) {
+        this.alarm_id = alarm_id;
     }
 
     public String getEvent_Id() {

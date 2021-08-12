@@ -41,7 +41,8 @@
                 android:id="@+id/today_event"
                 android:textSize="14sp"
                 android:fontFamily="@font/montserrat_medium"
-                android:text="5 events Today"
+                android:paddingHorizontal="50dp"
+                android:text=""
                 android:textColor="@color/black">
 
             </TextView>
