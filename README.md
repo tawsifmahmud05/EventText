@@ -2,8 +2,9 @@
 
 A simple Android app that allows users to schedule text messages for future delivery.
 
+![EventText Poster](https://github.com/tawsifmahmud05/EventText/assets/85132422/4fdb82fd-467c-4cc9-8c95-1ca31c569acb)
 
-![Event Text](https://github.com/tawsifmahmud05/EventText/assets/85132422/b51ebaa3-b173-4764-a08d-ac08adc09739)
+
 ## Features
 
 - **Schedule Texts**: Set future dates and times for text messages to be sent.
